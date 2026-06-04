@@ -1,0 +1,34 @@
+# NAT workflow config for the multi-agent store assistant.
+#
+# `nat run --config_file multi_agent/nat_app/configs/config.yml --input "..."`
+#
+# Uses the same OpenAI-compatible endpoint as the ADK agents: OLLAMA_BASE_URL and
+# OLLAMA_API_KEY in .env (Ollama for dev, NVIDIA NIM base URL + nvapi key for prod).
+
+general:
+  front_end:
+    _type: console
+
+llms:
+  # LiteLLM → ADK LiteLlm; base_url/api_key come from .env.
+  ollama_llm:
+    _type: litellm
+    model_name: ollama_chat/gemma4:26b
+    base_url: ${OLLAMA_BASE_URL}
+    api_key: ${OLLAMA_API_KEY}
+    temperature: 0.0
+    think: false
+
+  # NVIDIA NIM (uncomment to use). The NIM endpoint is OpenAI-compatible, so we
+  # use `_type: openai` rather than `_type: nim` — the `nim` path through ADK
+  # currently drops tools, and this assistant is tool-driven.
+  # nim_llm:
+  #   _type: openai
+  #   model_name: meta/llama-3.1-70b-instruct
+  #   base_url: ${NVIDIA_BASE_URL}
+  #   api_key: ${NVIDIA_API_KEY}
+  #   temperature: 0.0
+
+workflow:
+  _type: store_assistant
+  llm: ollama_llm

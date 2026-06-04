@@ -1,0 +1,40 @@
+# NAT eval config for the store assistant.
+#
+#   set -a && source .env && set +a
+#   nat eval --config_file multi_agent/nat_app/configs/eval_config.yml
+#
+# `nat eval` runs the workflow once per dataset row (generating a real answer +
+# trajectory via OLLAMA_BASE_URL), then scores each row with the evaluators below.
+
+llms:
+  ollama_llm:
+    _type: litellm
+    model_name: ollama_chat/gemma4:26b
+    base_url: ${OLLAMA_BASE_URL}
+    api_key: ${OLLAMA_API_KEY}
+    temperature: 0.0
+    think: false
+
+workflow:
+  _type: store_assistant
+  llm: ollama_llm
+
+eval:
+  general:
+    output:
+      dir: ./.tmp/nat/store_eval/
+      cleanup: true
+    dataset:
+      _type: json
+      file_path: multi_agent/nat_app/data/eval.json
+    # Per-node latency + token stats over the run (the productized bench_latency.py).
+    profiler:
+      compute_llm_metrics: true
+      workflow_runtime_forecast: true
+      token_uniqueness_forecast: true
+      bottleneck_analysis:
+        enable_nested_stack: true
+  evaluators:
+    # Our custom trajectory check (multi_agent/nat_app/evaluators.py).
+    routing:
+      _type: agent_routing

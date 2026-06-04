@@ -1,0 +1,17 @@
+# Custom off-topic input rail (Colang 1.0).
+# The decision is made by the `check_off_topic` action (actions.py), which uses
+# embedding similarity — no LLM call. On a miss we refuse and stop the turn,
+# so the message never reaches the ADK agent.
+
+define bot refuse off topic
+  "I'm the store's shopping assistant — I can help you find products, manage your cart, and explain how shopping here works. What can I help you shop for?"
+
+define flow check off topic
+  $on_topic = execute check_off_topic
+
+  if not $on_topic
+    if $config.enable_rails_exceptions
+      create event InputRailException(message="Input not allowed. The input was blocked by the 'check off topic' flow.")
+    else
+      bot refuse off topic
+    stop

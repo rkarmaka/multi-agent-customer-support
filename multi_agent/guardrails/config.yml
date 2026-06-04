@@ -1,0 +1,53 @@
+# NeMo Guardrails config for the store assistant's safety perimeter.
+#
+# Three mechanisms, each on the threat it's best at:
+#   - off-topic    -> FastEmbed similarity (custom action, see actions.py)
+#   - jailbreak    -> LLM self-check        (gemma3:4b, prompts.yml)
+#   - moderation   -> Llama Guard 3         (llama-guard3, in + out)
+#   - policy/leak  -> LLM self-check output (gemma3:4b, prompts.yml)
+#
+# We deliberately use ONLY input/output rails (no dialog rails) so NeMo guards
+# the perimeter and never competes with the ADK coordinator for conversation flow.
+#
+# Model base_url uses ${OLLAMA_BASE_URL} — same OpenAI-compatible endpoint as ADK
+# (Ollama locally, NVIDIA NIM in production).
+colang_version: "1.0"
+
+# A blocked rail returns a message with role "exception" (instead of a refusal
+# string), so the integration can detect a block with a clean boolean check.
+enable_rails_exceptions: true
+
+models:
+  # General small model used by the self-check input/output rails.
+  - type: main
+    engine: ollama
+    model: gemma3:4b
+    parameters:
+      base_url: ${OLLAMA_BASE_URL}
+
+  # Purpose-built content-safety classifier. NeMo injects this into the
+  # llama_guard actions automatically because its type is `llama_guard`.
+  - type: llama_guard
+    engine: ollama
+    model: llama-guard3:latest
+    parameters:
+      base_url: ${OLLAMA_BASE_URL}
+
+# Local embedding engine (ONNX, no torch) — used by the off-topic custom action.
+core:
+  embedding_search_provider:
+    name: default
+    parameters:
+      embedding_engine: FastEmbed
+      embedding_model: BAAI/bge-small-en-v1.5
+
+rails:
+  input:
+    flows:
+      - check off topic
+      - self check input
+      - llama guard check input
+  output:
+    flows:
+      - self check output
+      - llama guard check output

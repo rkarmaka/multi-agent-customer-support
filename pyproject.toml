@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "multi-agent-customer-support"
+version = "0.1.0"
+description = "Multi-agent customer support assistant for an e-commerce store"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dynamic = ["dependencies"]
+
+[project.entry-points."nat.components"]
+multi_agent = "multi_agent.nat_app.register"
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt"] }
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["multi_agent*"]

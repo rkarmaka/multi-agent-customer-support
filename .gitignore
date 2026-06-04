@@ -1,0 +1,9 @@
+.DS_Store
+.env
+__pycache__/
+*.pyc
+.venv/
+demo_credentials.json
+.adk/
+.pytest_cache/
+.tmp/

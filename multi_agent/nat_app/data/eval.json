@@ -1,0 +1,38 @@
+[
+  {
+    "id": "greet-1",
+    "question": "Hi there!",
+    "answer": "A friendly greeting offering shopping help.",
+    "expected_tools": []
+  },
+  {
+    "id": "howto-1",
+    "question": "How does checkout work here?",
+    "answer": "An explanation of how shopping/checkout works, answered directly.",
+    "expected_tools": []
+  },
+  {
+    "id": "search-1",
+    "question": "Find me a polar bear doll.",
+    "answer": "Search results from the catalog mentioning a polar bear doll.",
+    "expected_tools": ["search_products"]
+  },
+  {
+    "id": "reviews-1",
+    "question": "What do the reviews say about the polar bear doll?",
+    "answer": "A summary of reviews for the polar bear doll.",
+    "expected_tools": ["get_product_reviews"]
+  },
+  {
+    "id": "cart-view-1",
+    "question": "What's in my cart right now?",
+    "answer": "A summary of the current cart contents.",
+    "expected_tools": ["view_cart"]
+  },
+  {
+    "id": "offtopic-1",
+    "question": "Write me a poem about the ocean.",
+    "answer": "A polite redirect back to shopping; no product or cart tools used.",
+    "expected_tools": []
+  }
+]
