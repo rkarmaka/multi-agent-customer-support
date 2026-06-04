@@ -42,6 +42,10 @@ def remember(state, products: list[dict]) -> None:
         pid = p.get("product_id")
         if not pid:
             continue
+        # Pop-then-set so a re-shown product moves to the end (most recent),
+        # otherwise updating in place leaves it at its old insertion position
+        # and the recency-based cap below could evict a product just shown.
+        cache.pop(pid, None)
         cache[pid] = {"name": p.get("name", ""), "price_cents": p.get("price_cents")}
     if len(cache) > _MAX_ENTRIES:
         cache = dict(list(cache.items())[-_MAX_ENTRIES:])

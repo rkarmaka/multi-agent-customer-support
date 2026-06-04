@@ -9,13 +9,30 @@ description = "Multi-agent customer support assistant for an e-commerce store"
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
-dynamic = ["dependencies"]
+dependencies = [
+    "google-adk>=1.0.0",
+    "litellm>=1.50.0",
+    "nemoguardrails>=0.11.0",
+    "fastembed>=0.4.0",
+    "numpy>=1.26.0",
+    "supabase>=2.0.0",
+    "python-dotenv>=1.0.0",
+    "pydantic>=2.0.0",
+]
+
+[project.optional-dependencies]
+# Tests and manual tool debugging.
+dev = [
+    "pytest>=8.0.0",
+    "rich>=13.0.0",
+]
+# NAT profiling and evaluation (`nat run` / `nat eval`).
+eval = [
+    "nvidia-nat>=1.0.0",
+]
 
 [project.entry-points."nat.components"]
 multi_agent = "multi_agent.nat_app.register"
-
-[tool.setuptools.dynamic]
-dependencies = { file = ["requirements.txt"] }
 
 [tool.setuptools.packages.find]
 where = ["."]

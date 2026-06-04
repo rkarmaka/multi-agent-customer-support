@@ -9,8 +9,11 @@
 # We deliberately use ONLY input/output rails (no dialog rails) so NeMo guards
 # the perimeter and never competes with the ADK coordinator for conversation flow.
 #
-# Model base_url uses ${OLLAMA_BASE_URL} — same OpenAI-compatible endpoint as ADK
-# (Ollama locally, NVIDIA NIM in production).
+# The guard models (gemma3:4b self-check, llama-guard3) are Ollama-served and
+# run on their OWN endpoint, set by ${GUARDRAILS_BASE_URL} — independent of the
+# agents' PROVIDER. In a NIM deployment the agents talk to NIM while these guard
+# models stay on whatever Ollama-compatible host serves them; point
+# GUARDRAILS_BASE_URL there (defaults to local Ollama in .env.example).
 colang_version: "1.0"
 
 # A blocked rail returns a message with role "exception" (instead of a refusal
@@ -23,7 +26,7 @@ models:
     engine: ollama
     model: gemma3:4b
     parameters:
-      base_url: ${OLLAMA_BASE_URL}
+      base_url: ${GUARDRAILS_BASE_URL}
 
   # Purpose-built content-safety classifier. NeMo injects this into the
   # llama_guard actions automatically because its type is `llama_guard`.
@@ -31,7 +34,7 @@ models:
     engine: ollama
     model: llama-guard3:latest
     parameters:
-      base_url: ${OLLAMA_BASE_URL}
+      base_url: ${GUARDRAILS_BASE_URL}
 
 # Local embedding engine (ONNX, no torch) — used by the off-topic custom action.
 core:

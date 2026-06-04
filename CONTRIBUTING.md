@@ -5,10 +5,10 @@ Thanks for your interest in this project. It combines **Google ADK**, **NVIDIA N
 ## Getting started
 
 1. Fork and clone the repository.
-2. Create a virtual environment (Python 3.11+).
-3. Install in editable mode: `pip install -e .`
+2. Install [uv](https://docs.astral.sh/uv/) (Python 3.11+ is provisioned by uv).
+3. Install deps: `uv sync` (uv creates `.venv` for you).
 4. Copy `.env.example` to `.env` and configure Supabase + Ollama (see [README.md](README.md)).
-5. Optional: `pip install pytest rich nvidia-nat` for tests and NAT workflows.
+5. Optional: `uv sync --extra dev --extra eval` for tests (`pytest`, `rich`) and NAT workflows (`nvidia-nat`).
 
 ## Development setup
 

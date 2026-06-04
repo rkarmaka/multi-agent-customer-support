@@ -327,7 +327,7 @@ def remove_from_cart(product_ref: str, tool_context: ToolContext = None) -> dict
 
         client.table("cart_items").delete().eq(
             "cart_id", cart_id
-        ).eq("product_id", product_id).execute()
+        ).eq("product_id", product_id).eq("variant_key", "").execute()
 
         lines   = _fetch_cart_lines(client, cart_id)
         summary = _summarize_cart(lines)
